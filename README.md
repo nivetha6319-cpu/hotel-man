@@ -121,3 +121,6 @@ hotel management/
         ├── app.js         # Customer portal & tracking logic
         └── admin.js       # Admin dashboard & management logic
 ```
+
+Runtime JSON files in `data/` are created automatically when the server starts.
+They are ignored by Git so customer and order records stay local.

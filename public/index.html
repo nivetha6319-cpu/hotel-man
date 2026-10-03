@@ -1,0 +1,1322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Grand Pavilion & Bistro | Restaurant & Hotel Management</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#fffbeb',
+              100: '#fef3c7',
+              200: '#fde68a',
+              500: '#f59e0b',
+              600: '#d97706',
+              700: '#b45309',
+              800: '#92400e',
+              900: '#78350f',
+            },
+            hotelDark: '#0f172a'
+          }
+        }
+      }
+    }
+  </script>
+
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col">
+
+  <!-- ================= TOP NAVIGATION BAR ================= -->
+  <header class="sticky top-0 z-40 glass-header border-b border-slate-200/80 shadow-xs transition-all duration-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center justify-between h-20">
+        
+        <!-- Hotel Branding / Logo -->
+        <div class="flex items-center gap-3 cursor-pointer" onclick="App.switchPortal('customer'); App.switchMode('online')">
+          <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-amber-600 to-amber-400 flex items-center justify-center text-white shadow-md shadow-amber-500/20">
+            <i class="fa-solid fa-utensils text-xl"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h1 class="text-xl font-bold font-serif-title tracking-tight text-slate-900" id="nav-hotel-name">The Grand Pavilion</h1>
+              <span class="bg-amber-100 text-amber-800 text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wider">Indian Bistro</span>
+            </div>
+            <div class="flex items-center gap-2 mt-1">
+              <span id="nav-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-xs">
+                <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                <span id="nav-status-text">OPEN NOW</span>
+              </span>
+              <p class="text-xs text-slate-500 flex items-center gap-1">
+                <i class="fa-solid fa-clock text-amber-600 text-[10px]"></i>
+                <span id="nav-hotel-timings">Opens: 10:30 AM • Closes: 11:00 PM</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mode Switcher Pill (Customer Portal only) -->
+        <div id="customer-mode-switcher" class="hidden md:flex items-center p-1.5 bg-slate-100/90 rounded-2xl border border-slate-200/90 shadow-inner">
+          <button id="btn-mode-online" onclick="App.switchMode('online')" 
+            class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 bg-white text-slate-900 shadow-sm">
+            <i class="fa-solid fa-motorcycle text-amber-600"></i>
+            <span>Online Delivery</span>
+            <span class="text-[11px] font-normal text-slate-500">~35 min</span>
+          </button>
+          
+          <button id="btn-mode-offline" onclick="App.switchMode('offline')" 
+            class="flex items-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-all duration-200 text-slate-600 hover:text-slate-900">
+            <i class="fa-solid fa-hotel text-indigo-600"></i>
+            <span>Offline / Visit Hotel</span>
+            <span class="bg-indigo-100 text-indigo-700 text-[10px] px-1.5 py-0.5 rounded font-medium">Token Pass</span>
+          </button>
+        </div>
+
+        <!-- Right Action Items -->
+        <div class="flex items-center gap-3">
+          
+          <!-- Universal Track Button -->
+          <button onclick="App.openTrackModal()" 
+            class="hidden sm:flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-100 transition-colors">
+            <i class="fa-solid fa-magnifying-glass-location text-amber-600"></i>
+            <span>Track Order / Token</span>
+          </button>
+
+          <!-- Cart / Pre-order button (Customer Portal) -->
+          <button id="nav-cart-btn" onclick="App.toggleCartDrawer()" 
+            class="relative flex items-center gap-2.5 px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white font-semibold text-sm shadow-md shadow-amber-500/25 transition-all">
+            <i class="fa-solid fa-bag-shopping text-base"></i>
+            <span id="nav-cart-label">Cart</span>
+            <span id="nav-cart-badge" class="bg-white text-amber-600 text-xs font-bold px-2 py-0.5 rounded-full shadow-xs">0</span>
+          </button>
+
+          <!-- Admin Portal Switcher Button -->
+          <button id="btn-admin-portal-toggle" onclick="App.toggleAdminPortal()" 
+            class="flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-medium text-xs shadow-sm transition-colors">
+            <i class="fa-solid fa-gauge-high text-amber-400"></i>
+            <span id="admin-toggle-text">Admin Panel</span>
+          </button>
+        </div>
+
+      </div>
+
+      <!-- Mobile Mode Switcher -->
+      <div id="mobile-mode-switcher" class="flex md:hidden pb-3 pt-1">
+        <div class="grid grid-cols-2 w-full p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs font-medium">
+          <button id="btn-m-mode-online" onclick="App.switchMode('online')" class="py-2 text-center rounded-lg font-semibold bg-white text-slate-900 shadow-xs">
+            <i class="fa-solid fa-motorcycle text-amber-600 mr-1"></i> Online Delivery
+          </button>
+          <button id="btn-m-mode-offline" onclick="App.switchMode('offline')" class="py-2 text-center rounded-lg text-slate-600">
+            <i class="fa-solid fa-hotel text-indigo-600 mr-1"></i> Visit Hotel
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- ================= CUSTOMER PORTAL ================= -->
+  <main id="customer-portal" class="flex-1 pb-24">
+    
+    <!-- Hero / Info Banner Section (Dynamic based on Delivery Mode) -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 pb-4">
+      
+      <!-- MODE 1: ONLINE DELIVERY HERO BANNER -->
+      <div id="online-hero-banner" class="bg-gradient-to-r from-amber-900 via-amber-800 to-stone-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden">
+        <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-15 pointer-events-none hidden md:block">
+          <i class="fa-solid fa-bowl-food text-[220px] -mr-16 -mt-10 text-white"></i>
+        </div>
+        <div class="relative z-10 max-w-2xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/20 border border-amber-400/30 text-amber-300 text-xs font-semibold uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-bolt"></i> Fast Online Doorstep Delivery
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-extrabold font-serif-title tracking-tight text-white mb-2 leading-tight">
+            Order Fresh Gourmet Food <br><span class="text-amber-400">Delivered Right to Your Door</span>
+          </h2>
+          <p class="text-amber-100/90 text-sm sm:text-base leading-relaxed mb-6">
+            Enjoy our signature tandoori delicacies, rich aromatic gravies, and fresh breads with instant order tracking and easy payment options.
+          </p>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/10">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/20 flex items-center justify-center text-amber-300 text-lg">
+                <i class="fa-solid fa-stopwatch"></i>
+              </div>
+              <div>
+                <p class="text-[11px] text-amber-200">Delivery Time</p>
+                <p class="text-sm font-bold text-white" id="banner-est-time">30 - 40 Mins</p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/10">
+              <div class="w-10 h-10 rounded-xl bg-green-400/20 flex items-center justify-center text-green-300 text-lg">
+                <i class="fa-solid fa-receipt"></i>
+              </div>
+              <div>
+                <p class="text-[11px] text-amber-200">Delivery Fee</p>
+                <p class="text-sm font-bold text-white">₹<span id="banner-del-charge">40</span> <span class="text-[11px] font-normal text-amber-200">(Free &gt; ₹500)</span></p>
+              </div>
+            </div>
+
+            <div class="flex items-center gap-3 bg-white/10 backdrop-blur-md rounded-2xl p-3 border border-white/10">
+              <div class="w-10 h-10 rounded-xl bg-blue-400/20 flex items-center justify-center text-blue-300 text-lg">
+                <i class="fa-solid fa-credit-card"></i>
+              </div>
+              <div>
+                <p class="text-[11px] text-amber-200">Payment Modes</p>
+                <p class="text-sm font-bold text-white">UPI • Online • COD</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MODE 2: OFFLINE / HOTEL DIRECT PURCHASE BANNER -->
+      <div id="offline-hero-banner" class="hidden bg-gradient-to-r from-indigo-950 via-slate-900 to-indigo-900 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden border border-indigo-800/40">
+        <div class="absolute right-0 top-0 bottom-0 w-1/3 opacity-10 pointer-events-none hidden md:block">
+          <i class="fa-solid fa-hotel text-[220px] -mr-16 -mt-10 text-white"></i>
+        </div>
+        <div class="relative z-10 max-w-3xl">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-300 text-xs font-semibold uppercase tracking-wider mb-3">
+            <i class="fa-solid fa-store"></i> Offline / Hotel Direct Purchase
+          </div>
+          <h2 class="text-2xl sm:text-4xl font-extrabold font-serif-title tracking-tight text-white mb-2 leading-tight">
+            Visit Our Hotel Directly <br><span class="text-indigo-400">Zero Delivery Fees & Instant Token Pass</span>
+          </h2>
+          <p class="text-indigo-100/90 text-sm sm:text-base leading-relaxed mb-6">
+            Prefer dining at our hotel or picking up your meal fresh from our kitchen counter? Browse the full menu below, pre-select your favorite items, generate a Token Pass, and pay directly at the hotel counter!
+          </p>
+
+          <!-- Hotel Address & Info Card -->
+          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 sm:p-5 border border-white/15 grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+            <div class="md:col-span-2 flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-amber-400/20 flex-shrink-0 flex items-center justify-center text-amber-300 text-lg mt-0.5">
+                <i class="fa-solid fa-location-dot"></i>
+              </div>
+              <div>
+                <p class="text-xs text-indigo-200 font-medium">Hotel Address & Landmark</p>
+                <p class="text-sm font-semibold text-white mt-0.5 leading-snug" id="offline-banner-address">
+                  Plot 42, Heritage Avenue, Near Central Park, Connaught Place, New Delhi - 110001
+                </p>
+              </div>
+            </div>
+
+            <div class="flex items-start gap-3">
+              <div class="w-10 h-10 rounded-xl bg-green-400/20 flex-shrink-0 flex items-center justify-center text-green-300 text-lg mt-0.5">
+                <i class="fa-solid fa-clock"></i>
+              </div>
+              <div>
+                <p class="text-xs text-indigo-200 font-medium">Hotel Available Timings</p>
+                <p class="text-xs font-semibold text-white mt-0.5">
+                  Opens: <strong>10:30 AM</strong> • Closes: <strong>11:00 PM</strong>
+                </p>
+                <div class="mt-1 flex items-center gap-2">
+                  <span id="offline-banner-status-badge" class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500 text-white shadow-2xs">
+                    <span class="w-1.5 h-1.5 rounded-full bg-white animate-pulse"></span>
+                    <span id="offline-banner-status-text">OPEN NOW</span>
+                  </span>
+                  <span id="offline-banner-timing-detail" class="text-[11px] text-emerald-300 font-medium">Closes at 11:00 PM</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Offline Actions Bar -->
+          <div class="flex flex-wrap items-center gap-3">
+            <button onclick="App.openOfflineTokenModal(false)" 
+              class="flex items-center gap-2.5 px-6 py-3 rounded-2xl bg-amber-500 hover:bg-amber-600 text-white font-bold text-sm shadow-lg shadow-amber-500/25 transition-all">
+              <i class="fa-solid fa-ticket"></i>
+              <span>Generate Direct Visit Token</span>
+            </button>
+
+            <div class="flex items-center gap-2 text-xs text-indigo-200 px-3 py-2 bg-indigo-900/60 rounded-xl border border-indigo-700/50">
+              <i class="fa-solid fa-wallet text-amber-400"></i>
+              <span>Payment at Counter: <strong>Cash</strong>, <strong>UPI</strong>, or <strong>Card</strong></span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ================= MENU & DISHES SECTION ================= -->
+    <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-4">
+      
+      <!-- Section Header & Filter Controls -->
+      <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-200">
+        <div>
+          <div class="flex items-center gap-2">
+            <h2 class="text-2xl font-bold font-serif-title text-slate-900">Explore Our Special Menu</h2>
+            <span id="menu-mode-badge" class="bg-amber-100 text-amber-800 text-xs px-2.5 py-0.5 rounded-full font-semibold">
+              🛵 Online Delivery Menu
+            </span>
+          </div>
+          <p class="text-xs text-slate-500 mt-1">Prepared fresh with pure spices and finest ingredients by our master chefs</p>
+        </div>
+
+        <!-- Search, Voice Search (Tamil/English), Photo Search & Dietary Filters -->
+        <div class="flex flex-wrap items-center gap-2.5">
+          
+          <!-- Search box with Voice Microphone & Clear button -->
+          <div class="relative flex items-center">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 text-slate-400 text-xs pointer-events-none"></i>
+            <input type="text" id="menu-search-input" oninput="App.filterMenu()" placeholder="Search Indian foods from JSON..."
+              class="pl-9 pr-16 py-2.5 text-xs rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-amber-500 bg-white shadow-2xs w-60 sm:w-72">
+            
+            <div class="absolute right-2 flex items-center gap-1">
+              <!-- Clear X Button -->
+              <button id="search-clear-btn" onclick="App.clearSearch()" title="Clear Search" 
+                class="hidden w-5 h-5 rounded-full bg-slate-200 hover:bg-slate-300 text-slate-600 flex items-center justify-center text-[10px]">
+                <i class="fa-solid fa-xmark"></i>
+              </button>
+
+              <!-- Voice Search Microphone Button (Tamil & English) -->
+              <button type="button" id="voice-search-btn" onclick="App.openVoiceModal()" title="Voice Search (Tamil / English குரல்வழி தேடல்)"
+                class="w-7 h-7 rounded-lg bg-amber-50 hover:bg-amber-100 text-amber-600 border border-amber-200 flex items-center justify-center text-xs transition-transform active:scale-95 shadow-2xs">
+                <i class="fa-solid fa-microphone text-amber-600" id="voice-icon"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Photo Search / Camera Button beside Search Bar -->
+          <button type="button" onclick="App.openPhotoSearchModal()" title="Photo Search / Camera (Find food by photo)"
+            class="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 text-xs font-semibold shadow-2xs transition-all active:scale-95">
+            <i class="fa-solid fa-camera text-indigo-600 text-xs"></i>
+            <span>Photo Search</span>
+          </button>
+
+          <!-- Dietary Filter Tabs: All | Pure Veg | Non-Veg -->
+          <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs shadow-inner">
+            <button id="diet-filter-all" onclick="App.setDietaryFilter('all')" 
+              class="diet-pill px-3 py-1.5 rounded-lg font-bold bg-white text-slate-900 shadow-xs transition-all">
+              All
+            </button>
+            <button id="diet-filter-veg" onclick="App.setDietaryFilter('veg')" 
+              class="diet-pill px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-emerald-700 transition-all flex items-center gap-1.5">
+              <span class="veg-indicator scale-75"></span>
+              <span>Pure Veg</span>
+            </button>
+            <button id="diet-filter-nonveg" onclick="App.setDietaryFilter('nonveg')" 
+              class="diet-pill px-3 py-1.5 rounded-lg font-medium text-slate-600 hover:text-rose-700 transition-all flex items-center gap-1.5">
+              <span class="non-veg-indicator scale-75"></span>
+              <span>Non-Veg</span>
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Category Filter Pills -->
+      <div class="flex items-center gap-2 overflow-x-auto py-4 scrollbar-none" id="category-pills">
+        <!-- Generated by JS -->
+      </div>
+
+      <!-- Active Filter / Search Feedback Bar -->
+      <div id="filter-feedback-bar" class="hidden flex items-center justify-between pb-2 text-xs text-slate-600 bg-amber-50/80 border border-amber-200 rounded-2xl px-4 py-2.5 mb-3">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-filter text-amber-600 text-xs"></i>
+          <span id="filter-feedback-text" class="font-semibold text-slate-800">Showing dishes</span>
+        </div>
+        <button onclick="App.resetAllFilters()" class="text-xs text-amber-700 hover:text-amber-900 font-bold flex items-center gap-1 underline cursor-pointer">
+          <i class="fa-solid fa-rotate-left text-[10px]"></i> Reset All Filters
+        </button>
+      </div>
+
+      <!-- Menu Grid -->
+      <div id="menu-items-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 pt-2">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="menu-empty-state" class="hidden text-center py-16">
+        <div class="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400 text-2xl mb-3">
+          <i class="fa-solid fa-bowl-rice"></i>
+        </div>
+        <h4 class="text-base font-semibold text-slate-700">No dishes found</h4>
+        <p class="text-xs text-slate-400 mt-1">Try resetting the category filter or search query</p>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ================= ADMIN DASHBOARD PORTAL ================= -->
+  <main id="admin-portal" class="hidden flex-1 pb-24 bg-slate-900 text-slate-100 min-h-screen">
+    
+    <!-- Admin Top Header Bar -->
+    <div class="bg-slate-950 border-b border-slate-800 py-4 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-7xl mx-auto flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        
+        <div>
+          <div class="flex items-center gap-3">
+            <span class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></span>
+            <h2 class="text-xl font-bold font-serif-title tracking-tight text-white">Admin Management Dashboard</h2>
+            <span class="bg-amber-500/20 text-amber-400 text-[11px] font-semibold px-2 py-0.5 rounded border border-amber-500/30">Live Central Kitchen</span>
+          </div>
+          <p class="text-xs text-slate-400 mt-0.5">Manage Online Delivery Orders & Direct Hotel Walk-in Tokens separately</p>
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button onclick="Admin.refreshAll()" class="flex items-center gap-2 text-xs font-semibold px-3.5 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors">
+            <i class="fa-solid fa-rotate text-amber-400"></i>
+            <span>Refresh Data</span>
+          </button>
+
+          <button onclick="App.switchPortal('customer')" class="flex items-center gap-2 text-xs font-semibold px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-white shadow-md shadow-amber-500/20 transition-all">
+            <i class="fa-solid fa-store"></i>
+            <span>Back to Storefront</span>
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Admin Content Container -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
+
+      <!-- ================= 5 CORE KPI CARDS ================= -->
+      <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+        
+        <!-- KPI 1: Total Online Orders -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Total Online Orders</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-400 text-sm">
+              <i class="fa-solid fa-motorcycle"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-black text-white" id="kpi-online-orders">0</span>
+            <span class="text-[11px] font-semibold text-amber-400">Online Delivery</span>
+          </div>
+        </div>
+
+        <!-- KPI 2: Total Offline Orders -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Total Offline Orders</span>
+            <div class="w-8 h-8 rounded-lg bg-indigo-500/10 flex items-center justify-center text-indigo-400 text-sm">
+              <i class="fa-solid fa-hotel"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-black text-white" id="kpi-offline-orders">0</span>
+            <span class="text-[11px] font-semibold text-indigo-400">Hotel Direct</span>
+          </div>
+        </div>
+
+        <!-- KPI 3: Pending Orders -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Pending Orders</span>
+            <div class="w-8 h-8 rounded-lg bg-rose-500/10 flex items-center justify-center text-rose-400 text-sm">
+              <i class="fa-solid fa-clock-rotate-left"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-black text-rose-400" id="kpi-pending-orders">0</span>
+            <span class="text-[11px] font-medium text-slate-400">Active</span>
+          </div>
+        </div>
+
+        <!-- KPI 4: Completed Orders -->
+        <div class="bg-slate-800/80 border border-slate-700/80 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-medium text-slate-400">Completed Orders</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-400 text-sm">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-2">
+            <span class="text-2xl font-black text-emerald-400" id="kpi-completed-orders">0</span>
+            <span class="text-[11px] font-medium text-slate-400">Delivered/Collected</span>
+          </div>
+        </div>
+
+        <!-- KPI 5: Today's Sales -->
+        <div class="col-span-2 md:col-span-1 bg-gradient-to-tr from-amber-950/60 to-slate-800/90 border border-amber-600/40 rounded-2xl p-4 shadow-sm relative overflow-hidden">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-semibold text-amber-200">Today's Sales</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-300 text-sm">
+              <i class="fa-solid fa-indian-rupee-sign"></i>
+            </div>
+          </div>
+          <div class="flex items-baseline gap-1">
+            <span class="text-sm font-bold text-amber-400">₹</span>
+            <span class="text-2xl font-black text-amber-300" id="kpi-today-sales">0.00</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ================= ADMIN TAB NAVIGATION ================= -->
+      <div class="flex items-center justify-between border-b border-slate-800 pb-3 flex-wrap gap-4">
+        
+        <div class="flex items-center gap-2 p-1 bg-slate-950 rounded-xl border border-slate-800">
+          <button id="admin-tab-online" onclick="Admin.switchTab('online')" 
+            class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all bg-amber-500 text-slate-950 shadow-sm">
+            <i class="fa-solid fa-motorcycle"></i>
+            <span>Online Orders</span>
+            <span id="admin-online-badge" class="bg-black/20 text-slate-950 text-[10px] px-1.5 py-0.5 rounded font-bold">0</span>
+          </button>
+
+          <button id="admin-tab-offline" onclick="Admin.switchTab('offline')" 
+            class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+            <i class="fa-solid fa-hotel"></i>
+            <span>Offline / Hotel Direct Orders</span>
+            <span id="admin-offline-badge" class="bg-slate-800 text-slate-300 text-[10px] px-1.5 py-0.5 rounded font-bold">0</span>
+          </button>
+
+          <button id="admin-tab-settings" onclick="Admin.switchTab('settings')" 
+            class="flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-semibold text-slate-400 hover:text-white transition-all">
+            <i class="fa-solid fa-sliders"></i>
+            <span>Hotel & Menu Settings</span>
+          </button>
+        </div>
+
+        <!-- Quick Search in Admin -->
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 text-xs"></i>
+          <input type="text" id="admin-search-input" oninput="Admin.handleSearch()" placeholder="Search customer, phone or ID..."
+            class="pl-8 pr-3 py-1.5 text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-amber-500 w-64">
+        </div>
+
+      </div>
+
+      <!-- ================= TAB 1: ONLINE ORDERS MANAGEMENT ================= -->
+      <section id="admin-online-section" class="space-y-4">
+        
+        <!-- Status filter buttons -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          <span class="text-slate-400 text-xs mr-1 font-medium">Filter Status:</span>
+          <button onclick="Admin.setOnlineFilter('all')" class="admin-of-pill active px-3 py-1.5 rounded-lg bg-amber-500 text-slate-950 font-bold" data-status="all">All</button>
+          <button onclick="Admin.setOnlineFilter('Order Placed')" class="admin-of-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Order Placed">Order Placed</button>
+          <button onclick="Admin.setOnlineFilter('Preparing')" class="admin-of-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Preparing">Preparing</button>
+          <button onclick="Admin.setOnlineFilter('Out for Delivery')" class="admin-of-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Out for Delivery">Out for Delivery</button>
+          <button onclick="Admin.setOnlineFilter('Delivered')" class="admin-of-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Delivered">Delivered</button>
+        </div>
+
+        <!-- Online Orders Table Container -->
+        <div class="bg-slate-950/70 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th class="py-3.5 px-4">Order ID & Time</th>
+                  <th class="py-3.5 px-4">Customer Details</th>
+                  <th class="py-3.5 px-4">Delivery Address</th>
+                  <th class="py-3.5 px-4">Ordered Items</th>
+                  <th class="py-3.5 px-4">Bill Amount</th>
+                  <th class="py-3.5 px-4">Payment</th>
+                  <th class="py-3.5 px-4">Delivery Status</th>
+                  <th class="py-3.5 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-online-table-body" class="divide-y divide-slate-800 text-slate-300">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+          <div id="admin-online-empty" class="hidden text-center py-12 text-slate-500">
+            <i class="fa-solid fa-box-open text-3xl mb-2"></i>
+            <p>No online orders found in this view</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 2: OFFLINE / HOTEL DIRECT ORDERS ================= -->
+      <section id="admin-offline-section" class="hidden space-y-4">
+        
+        <!-- Status filter buttons -->
+        <div class="flex items-center gap-2 overflow-x-auto pb-1 text-xs">
+          <span class="text-slate-400 text-xs mr-1 font-medium">Filter Status:</span>
+          <button onclick="Admin.setOfflineFilter('all')" class="admin-off-pill active px-3 py-1.5 rounded-lg bg-indigo-500 text-white font-bold" data-status="all">All</button>
+          <button onclick="Admin.setOfflineFilter('Token Issued')" class="admin-off-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Token Issued">Token Issued</button>
+          <button onclick="Admin.setOfflineFilter('Preparing')" class="admin-off-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Preparing">Preparing</button>
+          <button onclick="Admin.setOfflineFilter('Ready for Pickup')" class="admin-off-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Ready for Pickup">Ready for Pickup</button>
+          <button onclick="Admin.setOfflineFilter('Completed')" class="admin-off-pill px-3 py-1.5 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700" data-status="Completed">Completed</button>
+        </div>
+
+        <!-- Offline Orders Table Container -->
+        <div class="bg-slate-950/70 border border-slate-800 rounded-2xl overflow-hidden shadow-lg">
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="bg-slate-900/90 text-slate-400 font-semibold border-b border-slate-800 uppercase tracking-wider text-[11px]">
+                <tr>
+                  <th class="py-3.5 px-4">Token # & Time</th>
+                  <th class="py-3.5 px-4">Customer Details</th>
+                  <th class="py-3.5 px-4">Visit Type / Arrival</th>
+                  <th class="py-3.5 px-4">Pre-selected Items</th>
+                  <th class="py-3.5 px-4">Estimated Total</th>
+                  <th class="py-3.5 px-4">Hotel Payment (Cash/UPI/Card)</th>
+                  <th class="py-3.5 px-4">Order / Pickup Status</th>
+                  <th class="py-3.5 px-4 text-right">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="admin-offline-table-body" class="divide-y divide-slate-800 text-slate-300">
+                <!-- Injected via JS -->
+              </tbody>
+            </table>
+          </div>
+          <div id="admin-offline-empty" class="hidden text-center py-12 text-slate-500">
+            <i class="fa-solid fa-ticket text-3xl mb-2"></i>
+            <p>No offline tokens or hotel direct orders found</p>
+          </div>
+        </div>
+
+      </section>
+
+      <!-- ================= TAB 3: HOTEL & MENU SETTINGS ================= -->
+      <section id="admin-settings-section" class="hidden space-y-6">
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          
+          <!-- Hotel Configuration Card -->
+          <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-6">
+            <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-hotel text-amber-400"></i> Hotel Details & Delivery Rules
+            </h3>
+            
+            <form id="hotel-settings-form" onsubmit="Admin.saveHotelSettings(event)" class="space-y-4 text-xs">
+              <div>
+                <label class="block text-slate-400 mb-1 font-medium">Hotel Name</label>
+                <input type="text" id="cfg-hotel-name" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:ring-1 focus:ring-amber-500">
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-medium">Hotel Address (Shown for Offline Visits)</label>
+                <textarea id="cfg-hotel-address" rows="2" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200 focus:ring-1 focus:ring-amber-500"></textarea>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Available Timings</label>
+                  <input type="text" id="cfg-hotel-timings" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Contact Phone</label>
+                  <input type="text" id="cfg-hotel-phone" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Delivery Charge (₹)</label>
+                  <input type="number" id="cfg-del-charge" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Free Delivery Above (₹)</label>
+                  <input type="number" id="cfg-free-thresh" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Estimated Delivery (Mins)</label>
+                  <input type="number" id="cfg-est-time" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold rounded-xl transition-colors shadow-md">
+                Update Hotel Details
+              </button>
+            </form>
+          </div>
+
+          <!-- Add New Menu Item Form -->
+          <div class="bg-slate-950/70 border border-slate-800 rounded-2xl p-6">
+            <h3 class="text-base font-bold text-white mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-plus-circle text-emerald-400"></i> Add New Menu Dish
+            </h3>
+
+            <form id="add-dish-form" onsubmit="Admin.addNewDish(event)" class="space-y-4 text-xs">
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Dish Name</label>
+                  <input type="text" id="new-dish-name" required placeholder="e.g. Kadai Paneer" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Category</label>
+                  <select id="new-dish-category" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                    <option value="Starters">Starters</option>
+                    <option value="Main Course">Main Course</option>
+                    <option value="Biryani & Rice">Biryani & Rice</option>
+                    <option value="Breads">Breads</option>
+                    <option value="Desserts">Desserts</option>
+                    <option value="Beverages">Beverages</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="grid grid-cols-3 gap-3">
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Price (₹)</label>
+                  <input type="number" id="new-dish-price" required placeholder="250" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div>
+                  <label class="block text-slate-400 mb-1 font-medium">Prep Time</label>
+                  <input type="text" id="new-dish-prep" placeholder="20 mins" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+                </div>
+                <div class="flex flex-col justify-end">
+                  <label class="flex items-center gap-2 text-slate-300 cursor-pointer pb-2">
+                    <input type="checkbox" id="new-dish-veg" checked class="rounded border-slate-700 text-emerald-500 focus:ring-0">
+                    <span>Pure Veg?</span>
+                  </label>
+                </div>
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-medium">Description</label>
+                <textarea id="new-dish-desc" rows="2" placeholder="Briefly describe taste and preparation" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200"></textarea>
+              </div>
+
+              <div>
+                <label class="block text-slate-400 mb-1 font-medium">Photo URL (Optional)</label>
+                <input type="url" id="new-dish-image" placeholder="https://..." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-slate-200">
+              </div>
+
+              <button type="submit" class="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl transition-colors shadow-md">
+                Add Dish to Menu
+              </button>
+            </form>
+          </div>
+
+        </div>
+
+      </section>
+
+    </div>
+
+  </main>
+
+  <!-- ================= MODALS & DRAWERS ================= -->
+
+  <!-- 1. CART / PRE-ORDER DRAWER -->
+  <div id="cart-drawer-overlay" onclick="App.toggleCartDrawer()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity"></div>
+  <aside id="cart-drawer" class="fixed right-0 top-0 bottom-0 w-full sm:w-96 bg-white z-50 shadow-2xl flex flex-col transform translate-x-full transition-transform duration-300 ease-in-out">
+    <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+      <div>
+        <h3 class="font-bold text-base text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-basket-shopping text-amber-500"></i>
+          <span id="drawer-title">Your Order Bag</span>
+        </h3>
+        <p class="text-[11px] text-slate-500 mt-0.5" id="drawer-subtitle">Online Delivery</p>
+      </div>
+      <button onclick="App.toggleCartDrawer()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+    </div>
+
+    <!-- Free Delivery Progress Bar (Online Mode) -->
+    <div id="drawer-free-del-bar" class="p-3 bg-amber-50 border-b border-amber-100 text-xs">
+      <div class="flex justify-between font-medium text-amber-900 mb-1 text-[11px]">
+        <span id="free-del-text">Add ₹220 more for FREE delivery</span>
+        <span id="free-del-percent">60%</span>
+      </div>
+      <div class="w-full h-1.5 bg-amber-200 rounded-full overflow-hidden">
+        <div id="free-del-progress" class="h-full bg-amber-500 rounded-full transition-all duration-300" style="width: 60%"></div>
+      </div>
+    </div>
+
+    <!-- Items List -->
+    <div id="cart-items-container" class="flex-1 overflow-y-auto p-4 space-y-3">
+      <!-- Items dynamically injected -->
+    </div>
+
+    <!-- Cart Footer & Bill Breakdown -->
+    <div class="p-4 border-t border-slate-200 bg-slate-50/80 space-y-3">
+      <div class="space-y-1.5 text-xs text-slate-600">
+        <div class="flex justify-between">
+          <span>Items Subtotal</span>
+          <span class="font-semibold text-slate-800" id="bill-subtotal">₹0.00</span>
+        </div>
+        <div class="flex justify-between" id="bill-del-row">
+          <span>Delivery Charge</span>
+          <span class="font-semibold text-slate-800" id="bill-delivery">₹40.00</span>
+        </div>
+        <div class="flex justify-between">
+          <span>Taxes (GST 5%)</span>
+          <span class="font-semibold text-slate-800" id="bill-tax">₹0.00</span>
+        </div>
+        <div class="flex justify-between pt-2 border-t border-slate-200 text-sm font-bold text-slate-900">
+          <span>Total Payable</span>
+          <span class="text-amber-600" id="bill-grand-total">₹0.00</span>
+        </div>
+      </div>
+
+      <div class="pt-1">
+        <button id="cart-checkout-btn" onclick="App.proceedToCheckout()" 
+          class="w-full py-3 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl shadow-lg shadow-amber-500/25 transition-all text-sm flex items-center justify-center gap-2">
+          <span>Proceed to Order</span>
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- 2. ONLINE DELIVERY CHECKOUT MODAL -->
+  <div id="modal-online-checkout" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden my-8">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-amber-600 to-amber-500 p-5 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-lg font-serif-title flex items-center gap-2">
+            <i class="fa-solid fa-motorcycle"></i> Confirm Online Delivery
+          </h3>
+          <p class="text-xs text-amber-100 mt-0.5">Please provide your delivery details & payment method</p>
+        </div>
+        <button onclick="App.closeCheckoutModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Checkout Form -->
+      <form id="online-order-form" onsubmit="App.submitOnlineOrder(event)" class="p-6 space-y-4">
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Full Name *</label>
+            <input type="text" id="chk-name" required placeholder="e.g. John Doe"
+              class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number *</label>
+            <input type="tel" id="chk-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile"
+              class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Address *</label>
+          <textarea id="chk-address" required rows="2" placeholder="House/Flat No., Street, Landmark, City & PIN"
+            class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500"></textarea>
+        </div>
+
+        <div>
+          <label class="block text-xs font-semibold text-slate-700 mb-1">Delivery Instructions (Optional)</label>
+          <input type="text" id="chk-instructions" placeholder="e.g. Ring bell, leave at reception, extra napkins"
+            class="w-full text-xs px-3.5 py-2 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500">
+        </div>
+
+        <!-- Estimated Delivery & Charges Box -->
+        <div class="bg-amber-50/70 border border-amber-200/80 rounded-2xl p-3 text-xs space-y-1.5">
+          <div class="flex justify-between items-center text-slate-700">
+            <span class="flex items-center gap-1.5 text-amber-800 font-medium">
+              <i class="fa-solid fa-stopwatch text-amber-600"></i> Estimated Delivery Time:
+            </span>
+            <span class="font-bold text-slate-900" id="chk-est-time">30 - 45 mins</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-700">
+            <span class="flex items-center gap-1.5 text-amber-800 font-medium">
+              <i class="fa-solid fa-truck text-amber-600"></i> Delivery Charge:
+            </span>
+            <span class="font-bold text-slate-900" id="chk-del-charge">₹40.00</span>
+          </div>
+          <div class="flex justify-between items-center text-slate-900 font-bold pt-1 border-t border-amber-200">
+            <span>Total Payable Amount:</span>
+            <span class="text-base text-amber-600" id="chk-grand-total">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- Select Payment Method -->
+        <div>
+          <label class="block text-xs font-semibold text-slate-800 mb-2">Select Payment Method *</label>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <!-- UPI -->
+            <label class="cursor-pointer">
+              <input type="radio" name="paymentMethod" value="UPI" checked class="peer sr-only">
+              <div class="p-3 rounded-xl border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:bg-amber-50/40 text-center transition-all">
+                <i class="fa-brands fa-google-pay text-xl text-slate-700 block mb-1"></i>
+                <span class="text-xs font-bold text-slate-800 block">UPI</span>
+                <span class="text-[10px] text-slate-500">GPay, PhonePe, QR</span>
+              </div>
+            </label>
+
+            <!-- Online Payment -->
+            <label class="cursor-pointer">
+              <input type="radio" name="paymentMethod" value="Online Payment" class="peer sr-only">
+              <div class="p-3 rounded-xl border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:bg-amber-50/40 text-center transition-all">
+                <i class="fa-solid fa-credit-card text-lg text-slate-700 block mb-1"></i>
+                <span class="text-xs font-bold text-slate-800 block">Card / NetBanking</span>
+                <span class="text-[10px] text-slate-500">Instant Online</span>
+              </div>
+            </label>
+
+            <!-- Cash on Delivery -->
+            <label class="cursor-pointer">
+              <input type="radio" name="paymentMethod" value="Cash on Delivery" class="peer sr-only">
+              <div class="p-3 rounded-xl border-2 border-slate-200 peer-checked:border-amber-500 peer-checked:bg-amber-50/40 text-center transition-all">
+                <i class="fa-solid fa-money-bill-wave text-lg text-slate-700 block mb-1"></i>
+                <span class="text-xs font-bold text-slate-800 block">Cash on Delivery</span>
+                <span class="text-[10px] text-slate-500">Pay upon delivery</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" 
+          class="w-full py-3.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-2xl shadow-lg shadow-amber-500/25 transition-all text-sm flex items-center justify-center gap-2">
+          <i class="fa-solid fa-check"></i>
+          <span>Place Online Order Now</span>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. OFFLINE / VISIT HOTEL TOKEN MODAL -->
+  <div id="modal-offline-token" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden my-8">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-indigo-700 to-indigo-600 p-5 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-lg font-serif-title flex items-center gap-2">
+            <i class="fa-solid fa-ticket"></i> Generate Hotel Visit Token
+          </h3>
+          <p class="text-xs text-indigo-100 mt-0.5">Collect your food directly at the hotel counter</p>
+        </div>
+        <button onclick="App.closeOfflineTokenModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Form -->
+      <form id="offline-token-form" onsubmit="App.submitOfflineToken(event)" class="p-6 space-y-4">
+        
+        <div class="bg-indigo-50 border border-indigo-100 rounded-2xl p-3.5 text-xs text-indigo-900">
+          <p class="font-bold flex items-center gap-1.5 mb-1 text-indigo-950">
+            <i class="fa-solid fa-location-dot text-indigo-600"></i> Hotel Collection Point:
+          </p>
+          <p class="text-indigo-800 text-[11px] leading-relaxed" id="offline-token-modal-address">
+            Plot 42, Heritage Avenue, Connaught Place, New Delhi
+          </p>
+          <p class="mt-2 text-[11px] text-indigo-700 flex items-center gap-1">
+            <i class="fa-solid fa-clock"></i> Timings: <strong id="offline-token-modal-timings">10:30 AM – 11:00 PM</strong>
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Your Name *</label>
+            <input type="text" id="off-name" required placeholder="e.g. Sneha Roy"
+              class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Mobile Number *</label>
+            <input type="tel" id="off-phone" required pattern="[0-9]{10}" placeholder="10-digit mobile"
+              class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Visit Type *</label>
+            <select id="off-visit-type" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="Takeaway">Express Takeaway (Counter Pickup)</option>
+              <option value="Dine-in">Dine-in (Restaurant Table)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-700 mb-1">Estimated Arrival *</label>
+            <select id="off-visit-timing" class="w-full text-xs px-3.5 py-2.5 rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-indigo-500">
+              <option value="Visiting Now">Visiting Right Now</option>
+              <option value="In 15 minutes">In 15 minutes</option>
+              <option value="In 30 minutes">In 30 minutes</option>
+              <option value="In 1 hour">In 1 hour</option>
+              <option value="Later Today">Later Today</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Pre-selected items summary (if any) -->
+        <div id="offline-preselected-box" class="border border-slate-200 rounded-2xl p-3 text-xs bg-slate-50">
+          <div class="flex justify-between items-center mb-1">
+            <span class="font-semibold text-slate-700">Pre-selected Dishes:</span>
+            <span class="text-indigo-600 font-bold" id="off-preselected-count">0 items</span>
+          </div>
+          <div id="off-preselected-list" class="text-slate-600 text-[11px] max-h-24 overflow-y-auto divide-y divide-slate-200">
+            <!-- Items or note -->
+          </div>
+        </div>
+
+        <!-- Payment at Hotel Notice (Cash / UPI / Card) -->
+        <div class="p-3 bg-amber-50/80 border border-amber-200 rounded-2xl">
+          <p class="text-xs font-bold text-amber-900 flex items-center gap-1.5 mb-1">
+            <i class="fa-solid fa-coins text-amber-600"></i> Payment Directly at Hotel:
+          </p>
+          <p class="text-[11px] text-amber-800 leading-normal">
+            No advance payment required online! You can pay comfortably at our hotel billing counter via:
+          </p>
+          <div class="flex items-center gap-3 mt-2 text-xs font-bold text-slate-800">
+            <span class="px-2 py-1 bg-white rounded border border-amber-200 shadow-2xs">💵 Cash</span>
+            <span class="px-2 py-1 bg-white rounded border border-amber-200 shadow-2xs">📱 UPI (QR / PhonePe)</span>
+            <span class="px-2 py-1 bg-white rounded border border-amber-200 shadow-2xs">💳 Credit/Debit Card</span>
+          </div>
+        </div>
+
+        <button type="submit" 
+          class="w-full py-3.5 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-2xl shadow-lg shadow-indigo-600/25 transition-all text-sm flex items-center justify-center gap-2">
+          <i class="fa-solid fa-ticket"></i>
+          <span>Generate Token / Order Number</span>
+        </button>
+
+      </form>
+    </div>
+  </div>
+
+  <!-- 4. TRACK ORDER / TOKEN MODAL -->
+  <div id="modal-track" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-xl w-full shadow-2xl overflow-hidden my-8">
+      
+      <div class="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+        <div>
+          <h3 class="font-bold text-lg font-serif-title text-slate-900 flex items-center gap-2">
+            <i class="fa-solid fa-magnifying-glass-location text-amber-500"></i> Track Order or Token
+          </h3>
+          <p class="text-xs text-slate-500 mt-0.5">Enter your Online Order ID (ORD-...) or Token Number (TKN-...)</p>
+        </div>
+        <button onclick="App.closeTrackModal()" class="w-8 h-8 rounded-full bg-slate-200 hover:bg-slate-300 flex items-center justify-center text-slate-600">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <!-- Search Input -->
+      <div class="p-6 border-b border-slate-100 bg-white">
+        <form onsubmit="App.handleTrackSubmit(event)" class="flex gap-2">
+          <input type="text" id="track-search-input" required placeholder="e.g. ORD-2026-1001 or TKN-101"
+            class="flex-1 text-xs px-4 py-2.5 rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-amber-500 font-mono uppercase">
+          <button type="submit" class="px-5 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs transition-colors">
+            Track
+          </button>
+        </form>
+      </div>
+
+      <!-- Tracking Result Container -->
+      <div id="track-result-container" class="p-6 max-h-[70vh] overflow-y-auto">
+        <!-- Injected dynamically -->
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 5. ADMIN RECORD PAYMENT MODAL (Offline Orders) -->
+  <div id="modal-admin-payment" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-slate-900 border border-slate-800 rounded-3xl max-w-sm w-full p-6 text-slate-100 shadow-2xl">
+      <h3 class="text-base font-bold text-white mb-2 flex items-center gap-2">
+        <i class="fa-solid fa-cash-register text-emerald-400"></i> Collect Hotel Payment
+      </h3>
+      <p class="text-xs text-slate-400 mb-4" id="modal-pay-desc">Recording payment at hotel counter</p>
+
+      <div class="space-y-3 text-xs mb-5">
+        <label class="block text-slate-300 font-medium">Select Received Method:</label>
+        <div class="grid grid-cols-3 gap-2">
+          <button type="button" onclick="Admin.selectPaymentMethodOption('Cash')" class="pay-opt-btn p-3 rounded-xl border border-slate-700 bg-slate-800 hover:border-emerald-500 text-center font-bold" data-method="Cash">
+            <i class="fa-solid fa-money-bill block mb-1 text-emerald-400"></i> Cash
+          </button>
+          <button type="button" onclick="Admin.selectPaymentMethodOption('UPI')" class="pay-opt-btn p-3 rounded-xl border border-slate-700 bg-slate-800 hover:border-emerald-500 text-center font-bold" data-method="UPI">
+            <i class="fa-solid fa-qrcode block mb-1 text-blue-400"></i> UPI
+          </button>
+          <button type="button" onclick="Admin.selectPaymentMethodOption('Card')" class="pay-opt-btn p-3 rounded-xl border border-slate-700 bg-slate-800 hover:border-emerald-500 text-center font-bold" data-method="Card">
+            <i class="fa-solid fa-credit-card block mb-1 text-amber-400"></i> Card
+          </button>
+        </div>
+      </div>
+
+      <div class="flex gap-2">
+        <button onclick="Admin.closePaymentModal()" class="flex-1 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold rounded-xl transition-colors">
+          Cancel
+        </button>
+        <button onclick="Admin.confirmPaymentCollection()" class="flex-1 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl transition-colors">
+          Mark as Paid
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- 6. PHOTO SEARCH MODAL (Camera / Photo Upload) -->
+  <div id="modal-photo-search" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden my-8">
+      
+      <!-- Modal Header -->
+      <div class="bg-gradient-to-r from-indigo-700 to-indigo-600 p-5 text-white flex items-center justify-between">
+        <div>
+          <h3 class="font-bold text-base font-serif-title flex items-center gap-2">
+            <i class="fa-solid fa-camera text-amber-300"></i> AI Photo Search • உணவு புகைப்படம் தேடல்
+          </h3>
+          <p class="text-xs text-indigo-100 mt-0.5">Upload or take a photo of food to find matching Indian dishes</p>
+        </div>
+        <button onclick="App.closePhotoSearchModal()" class="w-8 h-8 rounded-full bg-white/20 hover:bg-white/30 flex items-center justify-center text-white">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-4 text-xs">
+        
+        <!-- Upload / Camera Area -->
+        <div id="photo-upload-zone" onclick="document.getElementById('photo-file-input').click()" 
+          class="border-2 border-dashed border-indigo-200 hover:border-indigo-500 rounded-2xl p-6 text-center cursor-pointer bg-indigo-50/40 hover:bg-indigo-50/70 transition-all">
+          <input type="file" id="photo-file-input" accept="image/*" class="hidden" onchange="App.handlePhotoUpload(event)">
+          <div class="w-12 h-12 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center mx-auto text-xl mb-2">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+          </div>
+          <p class="font-bold text-slate-800 text-sm">Click to Upload Photo or Snap Camera</p>
+          <p class="text-[11px] text-slate-400 mt-0.5">Supports JPG, PNG, WEBP (Photo of any Indian food)</p>
+        </div>
+
+        <!-- Quick Sample Dish Photo Buttons for Instant Testing -->
+        <div>
+          <p class="text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-2">Or test with popular Indian dish photo:</p>
+          <div class="flex flex-wrap gap-2">
+            <button type="button" onclick="App.testSamplePhoto('Chicken Biryani', 'https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?auto=format&fit=crop&w=600&q=80')" 
+              class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-700 font-semibold text-[11px] flex items-center gap-1.5 transition-all">
+              <span>🍗 Biryani</span>
+            </button>
+            <button type="button" onclick="App.testSamplePhoto('Paneer Butter Masala', 'https://images.unsplash.com/photo-1631452180519-c014fe946bc7?auto=format&fit=crop&w=600&q=80')" 
+              class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-emerald-50 hover:border-emerald-300 text-slate-700 font-semibold text-[11px] flex items-center gap-1.5 transition-all">
+              <span>🧀 Paneer</span>
+            </button>
+            <button type="button" onclick="App.testSamplePhoto('Murgh Butter Chicken', 'https://images.unsplash.com/photo-1603894584373-5ac82b2ae398?auto=format&fit=crop&w=600&q=80')" 
+              class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-rose-50 hover:border-rose-300 text-slate-700 font-semibold text-[11px] flex items-center gap-1.5 transition-all">
+              <span>🍛 Butter Chicken</span>
+            </button>
+            <button type="button" onclick="App.testSamplePhoto('Punjabi Samosa', 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80')" 
+              class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-700 font-semibold text-[11px] flex items-center gap-1.5 transition-all">
+              <span>🥟 Samosa</span>
+            </button>
+            <button type="button" onclick="App.testSamplePhoto('Butter Garlic Naan', 'https://images.unsplash.com/photo-1601050690597-df0568f70950?auto=format&fit=crop&w=600&q=80')" 
+              class="px-2.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-amber-50 hover:border-amber-300 text-slate-700 font-semibold text-[11px] flex items-center gap-1.5 transition-all">
+              <span>🫓 Naan/Roti</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Detection Results Container -->
+        <div id="photo-search-results" class="hidden space-y-3 pt-2 border-t border-slate-100">
+          <div class="flex items-center justify-between bg-emerald-50 border border-emerald-200 rounded-xl p-3 text-emerald-900">
+            <div class="flex items-center gap-2.5">
+              <img id="photo-preview-img" src="" alt="Preview" class="w-12 h-12 rounded-lg object-cover border border-emerald-300">
+              <div>
+                <p class="text-[10px] uppercase font-bold text-emerald-700">Detected Food Dish:</p>
+                <h5 class="text-xs font-black text-slate-900" id="photo-detected-label">Chicken Biryani</h5>
+              </div>
+            </div>
+            <span class="bg-emerald-600 text-white font-mono text-[10px] font-bold px-2 py-0.5 rounded-full" id="photo-confidence">96% Match</span>
+          </div>
+
+          <div>
+            <p class="font-bold text-slate-800 text-xs mb-2">Matching Indian Foods in JSON Database:</p>
+            <div id="photo-matched-foods-list" class="space-y-2 max-h-48 overflow-y-auto">
+              <!-- Matched items list -->
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- 7. VOICE SEARCH MODAL (Tamil / English Microphone) -->
+  <div id="modal-voice-search" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full shadow-2xl p-6 text-center space-y-4">
+      
+      <div class="flex items-center justify-between pb-2 border-b border-slate-100">
+        <h4 class="font-bold text-sm text-slate-900 flex items-center gap-2">
+          <i class="fa-solid fa-microphone text-amber-500"></i> Voice Search • குரல்வழி தேடல்
+        </h4>
+        <button onclick="App.closeVoiceModal()" class="w-7 h-7 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 text-xs">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Language Selector (Tamil / English) -->
+      <div class="inline-flex p-1 bg-slate-100 rounded-xl border border-slate-200 text-xs">
+        <button type="button" id="voice-lang-ta" onclick="App.setVoiceLanguage('ta-IN')" 
+          class="px-3 py-1 rounded-lg font-bold bg-white text-slate-900 shadow-2xs transition-all">
+          🇮🇳 தமிழ் (Tamil)
+        </button>
+        <button type="button" id="voice-lang-en" onclick="App.setVoiceLanguage('en-IN')" 
+          class="px-3 py-1 rounded-lg font-semibold text-slate-600 transition-all">
+          English
+        </button>
+      </div>
+
+      <!-- Animated Microphone Wave Indicator -->
+      <div class="py-4">
+        <div id="voice-pulse-circle" class="w-20 h-20 rounded-full bg-amber-500/20 text-amber-600 flex items-center justify-center mx-auto text-3xl shadow-lg ring-8 ring-amber-100 animate-pulse transition-all">
+          <i class="fa-solid fa-microphone" id="voice-modal-icon"></i>
+        </div>
+        <p class="text-xs font-bold text-slate-800 mt-4" id="voice-status-heading">Listening... பேசுங்கள்...</p>
+        <p class="text-[11px] text-slate-400 mt-1" id="voice-hint-text">Speak in Tamil or English (e.g., 'பிரியாணி', 'சிக்கன்', 'Paneer Butter Masala', 'Veg')</p>
+      </div>
+
+      <!-- Live Transcript Box -->
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 min-h-12 flex items-center justify-center text-xs font-semibold text-slate-700 italic" id="voice-transcript-box">
+        "Say food name clearly..."
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button onclick="App.toggleSpeechListening()" id="voice-toggle-action-btn" class="flex-1 py-2.5 bg-amber-500 hover:bg-amber-600 text-white font-bold rounded-xl text-xs shadow-md shadow-amber-500/20 transition-all">
+          Restart Listening
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- 8. OFFICIAL GENERATED BILL / INVOICE MODAL -->
+  <div id="modal-bill-receipt" class="fixed inset-0 z-50 hidden bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-lg w-full shadow-2xl overflow-hidden my-8 border border-slate-200">
+      
+      <!-- Printable Bill Sheet Container -->
+      <div id="bill-sheet-content" class="p-6 bg-white text-slate-800 space-y-4 text-xs">
+        
+        <!-- Bill Header -->
+        <div class="border-b-2 border-slate-900 pb-4 flex justify-between items-start">
+          <div>
+            <h3 class="font-black text-lg font-serif-title text-slate-900 tracking-tight" id="bill-hotel-name">The Grand Pavilion & Bistro</h3>
+            <p class="text-[10px] text-slate-500 mt-0.5 leading-relaxed" id="bill-hotel-address">Plot 42, Heritage Avenue, Connaught Place, New Delhi - 110001</p>
+            <p class="text-[10px] text-slate-500">Timings: 10:30 AM – 11:00 PM • Phone: +91 98765 43210</p>
+          </div>
+          <div class="text-right">
+            <span class="bg-slate-900 text-white font-mono font-bold text-xs px-2.5 py-1 rounded-lg block mb-1" id="bill-number">BILL-2026-1001</span>
+            <span class="text-[10px] text-slate-500 font-semibold" id="bill-date">03 Oct 2026</span>
+          </div>
+        </div>
+
+        <!-- Customer & Order Type Grid -->
+        <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-2xl border border-slate-200 text-[11px]">
+          <div>
+            <p class="text-slate-400 uppercase font-bold text-[9px]">Billed To Customer</p>
+            <p class="font-bold text-slate-900" id="bill-cust-name">Customer Name</p>
+            <p class="text-slate-600 flex items-center gap-1 mt-0.5">
+              <i class="fa-solid fa-phone text-[9px] text-slate-400"></i> <span id="bill-cust-phone">9876543210</span>
+            </p>
+            <p class="text-slate-600 mt-1 line-clamp-2" id="bill-cust-address">Delivery Address</p>
+          </div>
+          <div>
+            <p class="text-slate-400 uppercase font-bold text-[9px]">Order Information</p>
+            <p class="font-bold text-slate-900" id="bill-order-type">Online Delivery</p>
+            <p class="text-slate-600 mt-0.5">Order ID: <strong id="bill-order-id" class="font-mono text-amber-700">ORD-2026-1001</strong></p>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800" id="bill-payment-badge">UPI • Paid</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Food Items Table -->
+        <div>
+          <table class="w-full text-left text-xs border border-slate-200 rounded-xl overflow-hidden">
+            <thead class="bg-slate-100 text-slate-700 font-bold text-[10px] uppercase border-b border-slate-200">
+              <tr>
+                <th class="py-2 px-3">Item Description</th>
+                <th class="py-2 px-2 text-center">Qty</th>
+                <th class="py-2 px-2 text-right">Price</th>
+                <th class="py-2 px-3 text-right">Amount</th>
+              </tr>
+            </thead>
+            <tbody id="bill-items-tbody" class="divide-y divide-slate-100 text-slate-700 text-[11px]">
+              <!-- Items rows injected dynamically -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bill Calculations Breakdown -->
+        <div class="border-t border-slate-200 pt-3 space-y-1.5 text-xs text-slate-600">
+          <div class="flex justify-between">
+            <span>Items Subtotal:</span>
+            <span class="font-semibold text-slate-800" id="bill-subtotal-val">₹0.00</span>
+          </div>
+          <div class="flex justify-between">
+            <span>Delivery Charge:</span>
+            <span class="font-semibold text-slate-800" id="bill-delivery-val">₹0.00</span>
+          </div>
+          <div class="flex justify-between">
+            <span>GST Tax (5%):</span>
+            <span class="font-semibold text-slate-800" id="bill-tax-val">₹0.00</span>
+          </div>
+          <div class="flex justify-between pt-2 border-t border-slate-900 text-sm font-black text-slate-900">
+            <span>Total Payable:</span>
+            <span class="text-amber-700" id="bill-grand-total-val">₹0.00</span>
+          </div>
+        </div>
+
+        <!-- 4-Step Tracking Flow in Bill -->
+        <div class="bg-slate-50 p-3 rounded-2xl border border-slate-200">
+          <p class="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2">Order Tracking Status Pipeline:</p>
+          <div class="flex items-center justify-between text-[10px] font-bold text-center" id="bill-stepper-row">
+            <span class="text-emerald-700">✓ Order Placed</span>
+            <span class="text-slate-400">➔</span>
+            <span class="text-emerald-700">✓ Preparing</span>
+            <span class="text-slate-400">➔</span>
+            <span class="text-amber-700" id="bill-step-3">Out for Delivery</span>
+            <span class="text-slate-400">➔</span>
+            <span class="text-slate-400" id="bill-step-4">Completed</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Action Buttons (Print / Download / Close) -->
+      <div class="bg-slate-50 p-4 border-t border-slate-200 flex items-center justify-between gap-3">
+        <button type="button" onclick="App.closeBillModal()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-700 font-bold text-xs hover:bg-slate-100">
+          Close
+        </button>
+        <button type="button" onclick="window.print()" class="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs flex items-center gap-2 shadow-sm">
+          <i class="fa-solid fa-print"></i>
+          <span>Print / Download Bill</span>
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Hidden Container for Printable Receipt / Token -->
+  <div id="printable-receipt" class="hidden"></div>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+    <div class="bg-slate-900 text-white text-xs font-semibold px-4 py-2.5 rounded-2xl shadow-xl flex items-center gap-2 border border-slate-700">
+      <span id="toast-icon">✨</span>
+      <span id="toast-msg">Notification</span>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 mt-auto py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-slate-700" id="footer-hotel-name">The Grand Pavilion & Bistro</span>
+        <span>•</span>
+        <span id="footer-hotel-address">Plot 42, Heritage Avenue, Connaught Place</span>
+      </div>
+      <div>
+        <span>Online Delivery & Hotel Direct Purchase Management System</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="js/api.js"></script>
+  <script src="js/app.js"></script>
+  <script src="js/admin.js"></script>
+  <script>
+    // Bootstrapping
+    document.addEventListener('DOMContentLoaded', () => {
+      App.init();
+      Admin.init();
+    });
+  </script>
+</body>
+</html>

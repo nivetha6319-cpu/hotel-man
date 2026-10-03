@@ -1,2 +1,4 @@
 node_modules/
 data/*.json
+!data/orders.example.json
+!data/bills.example.json

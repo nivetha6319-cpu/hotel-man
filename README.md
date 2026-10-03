@@ -124,3 +124,5 @@ hotel management/
 
 Runtime JSON files in `data/` are created automatically when the server starts.
 They are ignored by Git so customer and order records stay local.
+Sanitized order and bill examples are committed as `data/orders.example.json`
+and `data/bills.example.json`; customer contact details are excluded.

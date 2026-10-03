@@ -1,0 +1,197 @@
+[
+  {
+    "id": "ORD-2026-1001",
+    "orderType": "Online Delivery",
+    "billId": "BILL-2026-1001",
+    "items": [
+      {
+        "id": "item-2",
+        "name": "Murgh Butter Chicken",
+        "price": 360,
+        "quantity": 1,
+        "isVeg": false
+      },
+      {
+        "id": "item-9",
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 2,
+        "isVeg": true
+      }
+    ],
+    "subtotal": 490,
+    "tax": 24.5,
+    "deliveryCharge": 40,
+    "grandTotal": 554.5,
+    "paymentMethod": "UPI",
+    "paymentStatus": "Paid",
+    "trackingStatus": "Out for Delivery",
+    "status": "Out for Delivery",
+    "estimatedTime": "35 mins",
+    "createdAt": "2026-10-03T06:18:00.000Z",
+    "statusHistory": [
+      {
+        "status": "Order Placed",
+        "time": "2026-10-03T06:18:00.000Z"
+      },
+      {
+        "status": "Preparing",
+        "time": "2026-10-03T06:25:00.000Z"
+      },
+      {
+        "status": "Out for Delivery",
+        "time": "2026-10-03T06:35:00.000Z"
+      }
+    ],
+    "deliveryStatus": "Out for Delivery"
+  },
+  {
+    "id": "ORD-2026-1002",
+    "orderType": "Online Delivery",
+    "billId": "BILL-2026-1002",
+    "items": [
+      {
+        "id": "item-1",
+        "name": "Paneer Butter Masala",
+        "price": 280,
+        "quantity": 1,
+        "isVeg": true
+      },
+      {
+        "id": "item-3",
+        "name": "Dal Makhani",
+        "price": 240,
+        "quantity": 1,
+        "isVeg": true
+      },
+      {
+        "id": "item-9",
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 3,
+        "isVeg": true
+      }
+    ],
+    "subtotal": 715,
+    "tax": 35.75,
+    "deliveryCharge": 0,
+    "grandTotal": 750.75,
+    "paymentMethod": "Online",
+    "paymentStatus": "Paid",
+    "trackingStatus": "Completed",
+    "status": "Delivered",
+    "estimatedTime": "35 mins",
+    "createdAt": "2026-10-03T05:28:00.000Z",
+    "statusHistory": [
+      {
+        "status": "Order Placed",
+        "time": "2026-10-03T05:28:00.000Z"
+      },
+      {
+        "status": "Preparing",
+        "time": "2026-10-03T05:43:00.000Z"
+      },
+      {
+        "status": "Out for Delivery",
+        "time": "2026-10-03T06:08:00.000Z"
+      },
+      {
+        "status": "Delivered",
+        "time": "2026-10-03T06:33:00.000Z"
+      }
+    ],
+    "deliveryStatus": "Delivered"
+  },
+  {
+    "id": "TKN-101",
+    "orderType": "Offline Hotel Pickup",
+    "billId": "BILL-2026-1003",
+    "items": [
+      {
+        "id": "item-1",
+        "name": "Paneer Butter Masala",
+        "price": 280,
+        "quantity": 1,
+        "isVeg": true
+      },
+      {
+        "id": "item-9",
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 2,
+        "isVeg": true
+      }
+    ],
+    "subtotal": 410,
+    "tax": 20.5,
+    "deliveryCharge": 0,
+    "grandTotal": 430.5,
+    "paymentMethod": "Cash at Hotel",
+    "paymentStatus": "Paid",
+    "trackingStatus": "Completed",
+    "status": "Completed",
+    "visitType": "Takeaway",
+    "visitTiming": "Visiting Now",
+    "createdAt": "2026-10-03T05:53:00.000Z",
+    "statusHistory": [
+      {
+        "status": "Order Placed",
+        "time": "2026-10-03T05:53:00.000Z"
+      },
+      {
+        "status": "Preparing",
+        "time": "2026-10-03T06:03:00.000Z"
+      },
+      {
+        "status": "Ready for Pickup",
+        "time": "2026-10-03T06:28:00.000Z"
+      },
+      {
+        "status": "Completed",
+        "time": "2026-10-03T06:38:00.000Z"
+      }
+    ]
+  },
+  {
+    "id": "TKN-102",
+    "orderType": "Offline Hotel Pickup",
+    "billId": "BILL-2026-1004",
+    "items": [
+      {
+        "id": "item-4",
+        "name": "Tandoori Paneer Tikka",
+        "price": 260,
+        "quantity": 1,
+        "isVeg": true
+      },
+      {
+        "id": "item-7",
+        "name": "Royal Chicken Dum Biryani",
+        "price": 340,
+        "quantity": 1,
+        "isVeg": false
+      }
+    ],
+    "subtotal": 600,
+    "tax": 30,
+    "deliveryCharge": 0,
+    "grandTotal": 630,
+    "paymentMethod": "UPI",
+    "paymentStatus": "Pending",
+    "trackingStatus": "Preparing",
+    "status": "Preparing",
+    "visitType": "Dine-in",
+    "visitTiming": "Arriving in 15 mins",
+    "createdAt": "2026-10-03T06:28:00.000Z",
+    "statusHistory": [
+      {
+        "status": "Order Placed",
+        "time": "2026-10-03T06:28:00.000Z"
+      },
+      {
+        "status": "Preparing",
+        "time": "2026-10-03T06:35:00.000Z"
+      }
+    ]
+  }
+]

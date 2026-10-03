@@ -1,0 +1,86 @@
+[
+  {
+    "billId": "BILL-2026-1001",
+    "orderId": "ORD-2026-1001",
+    "orderType": "Online Delivery",
+    "items": [
+      {
+        "name": "Murgh Butter Chicken",
+        "price": 360,
+        "quantity": 1,
+        "total": 360
+      },
+      {
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 2,
+        "total": 130
+      }
+    ],
+    "subtotal": 490,
+    "tax": 24.5,
+    "deliveryCharge": 40,
+    "grandTotal": 554.5,
+    "paymentMethod": "UPI",
+    "paymentStatus": "Paid",
+    "generatedAt": "2026-10-03T06:18:00.000Z"
+  },
+  {
+    "billId": "BILL-2026-1002",
+    "orderId": "ORD-2026-1002",
+    "orderType": "Online Delivery",
+    "items": [
+      {
+        "name": "Paneer Butter Masala",
+        "price": 280,
+        "quantity": 1,
+        "total": 280
+      },
+      {
+        "name": "Dal Makhani",
+        "price": 240,
+        "quantity": 1,
+        "total": 240
+      },
+      {
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 3,
+        "total": 195
+      }
+    ],
+    "subtotal": 715,
+    "tax": 35.75,
+    "deliveryCharge": 0,
+    "grandTotal": 750.75,
+    "paymentMethod": "Online",
+    "paymentStatus": "Paid",
+    "generatedAt": "2026-10-03T05:28:00.000Z"
+  },
+  {
+    "billId": "BILL-2026-1003",
+    "orderId": "TKN-101",
+    "orderType": "Offline Hotel Pickup",
+    "items": [
+      {
+        "name": "Paneer Butter Masala",
+        "price": 280,
+        "quantity": 1,
+        "total": 280
+      },
+      {
+        "name": "Butter Garlic Naan",
+        "price": 65,
+        "quantity": 2,
+        "total": 130
+      }
+    ],
+    "subtotal": 410,
+    "tax": 20.5,
+    "deliveryCharge": 0,
+    "grandTotal": 430.5,
+    "paymentMethod": "Cash at Hotel",
+    "paymentStatus": "Paid",
+    "generatedAt": "2026-10-03T05:53:00.000Z"
+  }
+]
